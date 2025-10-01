@@ -14,7 +14,7 @@ import {
 import {
   IconBrandWhatsapp,
 } from '@tabler/icons-react';
-import { Logo } from './Logo.tsx';
+import { Logo1, Logo2, Logo3, Logo4, Logo5, Logo6 } from './Logo.tsx';
 import classes from './Header.module.css';
 
 
@@ -27,9 +27,9 @@ export function Header({ leadName, leadNumber, leadState, targetName, date }: He
     <header className={classes.header}>
       <Container fluid className={classes.inner}>
         <Box px={5}>
-          <Logo
-           width={70}
-           height={70}
+          <Logo4
+           width={160}
+           height={160}
           />
         </Box>
 
