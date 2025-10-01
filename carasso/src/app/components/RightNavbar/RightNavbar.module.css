@@ -1,9 +1,11 @@
 .navbar {
   background-color: light-dark(var(--mantine-color-white), var(--mantine-color-dark-6));
   /* height: 800px; */
-  width: 300px;
-  padding: 0px 20px 0 20px;
-  /* height: calc(100dvh - var(--app-shell-header-height)); */
+  width: 250px;
+  height: calc(100dvh - var(--app-shell-header-height));
+  /* padding: 0px 20px 0 20px; */
+  /* right: 0; */
+  /* float: right; */
   /* margin-left: calc(var(--mantine-spacing-md) * -1); */
   /* padding-bottom: 0; */
   /* gap: 0; */
@@ -19,6 +21,13 @@
   margin-right: calc(var(--mantine-spacing-md) * -1);
   color: light-dark(var(--mantine-color-black), var(--mantine-color-white));
   border-bottom: 1px solid light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-4));
+}
+.nota {
+  background: var(--mantine-color-yellow-light);
+  border-top-left-radius: 0;
+  border-top-right-radius: 10;
+  border-bottom-right-radius: 10;
+  border-bottom-left-radius: 10;
 }
 
 .links {

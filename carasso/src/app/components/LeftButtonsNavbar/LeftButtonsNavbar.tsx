@@ -93,15 +93,7 @@ export function LeftButtonsNavbar() {
       </Button.Group>
 
       <div className={classes.footer}>
-        <Button
-          size="lg"
-          color="green"
-          fullWidth
-          leftSection={<IconBrandWhatsappFilled />}
-          radius={5}
-        >
-          <Text>Invia link acconto</Text>
-        </Button>
+        
       </div>
     </nav>
   );

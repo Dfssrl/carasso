@@ -18,14 +18,6 @@ import { Logo } from './Logo.tsx';
 import classes from './Header.module.css';
 
 
-const mainLinks = [
-  { link: '#', label: 'Book a demo' },
-  { link: '#', label: 'Documentation' },
-  { link: '#', label: 'Community' },
-  { link: '#', label: 'Academy' },
-  { link: '#', label: 'Forums' },
-];
-
 interface HeaderProps {
   date: string;
 }

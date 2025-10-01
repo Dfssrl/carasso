@@ -9,10 +9,17 @@ import {
   Burger,
   Button,
   Center,
+  Group,
   Indicator,
   Stack,
   Text
 } from '@mantine/core';
+import {
+  IconPlayerPlayFilled,
+  IconPlayerPauseFilled,
+  IconPlayerStopFilled,
+  IconBrandWhatsappFilled,
+} from '@tabler/icons-react';
 import {
   Calendar,
   MiniCalendar,
@@ -22,6 +29,7 @@ import {
 
 import { Header } from './components/Header/Header.tsx';
 import { LeftButtonsNavbar } from './components/LeftButtonsNavbar/LeftButtonsNavbar.tsx';
+import { RightNavbar } from './components/RightNavbar/RightNavbar.tsx';
 
 import '@mantine/core/styles.css';
 import '@mantine/dates/styles.css';
@@ -63,6 +71,9 @@ export default function Home() {
         breakpoint: 'sm',
         collapsed: { mobile: !opened },
       }}
+      footer={{
+        width: 300,
+      }}
     >
       <AppShell.Header>
         <Header
@@ -84,19 +95,6 @@ export default function Home() {
             </Button.Group>
           </Center>
 
-          {/*
-            <Calendar
-            static
-            renderDay={(date) => {
-              const day = dayjs(date).date();
-              return (
-                <Indicator size={6} color="yellow" offset={-2} disabled={day !== 16}>
-                  <div>{day}</div>
-                </Indicator>
-              );
-            }}
-          />
-          */}
           <MiniCalendar
             value={value}
             onChange={onChange}
@@ -119,18 +117,69 @@ export default function Home() {
             withSeconds={false}
             allowDeselect
             simpleGridProps={{ cols: 4, spacing: 'xs' }}
-            // simpleGridProps={{
-            //   type: 'container',
-            //   cols: { base: 1, '180px': 2, '320px': 3 },
-            //   spacing: 'xs',
-            // }}
           />
 
           <LeftButtonsNavbar />
         </Stack>
+
+        <AppShell.Section my={30} p={0}>
+          <Button
+            size="lg"
+            color="green"
+            fullWidth
+            leftSection={<IconBrandWhatsappFilled />}
+            radius={5}
+          >
+            <Text>Invia link acconto</Text>
+          </Button>
+        </AppShell.Section>
       </AppShell.Navbar>
 
+      <AppShell.Aside px={20} pt={20} align="center">
+        <RightNavbar date={dateMDY} />
+
+        <AppShell.Section mb={20} p={0}>
+          {/* BUTTONS */}
+          <Stack gap={10}>
+            <Group grow gap={5}>
+              <Button
+                disabled
+                size="sm"
+                color="gray"
+                rightSection={<IconPlayerPauseFilled color="gray" opacity={0.70} />}
+                radius={5}
+              >
+                <Stack gap={0}>
+                  <Text ta="left" fz={14} mt={2}>PAUSA</Text>
+                  <Text ta="left" fz={10} ta="left" mt={-4}>TIMER</Text>
+                </Stack>
+              </Button>
+              <Button
+                disabled
+                size="sm"
+                color="dark"
+                rightSection={<IconPlayerStopFilled color="gray" opacity={0.40} />}
+                radius={5}
+              >
+                <Text fz={9} ta="left">INTERROMPI<br/>SESSIONE</Text>
+              </Button>
+            </Group>
+
+            <Button
+              size="lg"
+              color="cyan"
+              fullWidth
+              rightSection={<IconPlayerPlayFilled color="white" opacity={0.65} />}
+              radius={5}
+            >
+              <Text>Prosegui</Text>
+            </Button>
+          </Stack>
+        </AppShell.Section>
+      </AppShell.Aside>
+
       <AppShell.Main>
+        Page content
       </AppShell.Main>
     </AppShell>
   );
