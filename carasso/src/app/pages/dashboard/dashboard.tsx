@@ -47,40 +47,33 @@ import '@mantine/core/styles.css';
 import '@mantine/dates/styles.css';
 import classes from './dashboard.module.css';
 
-export default function Dashboard() {
+export default function Dashboard({ count, date }) {
   const [opened, { toggle }] = useDisclosure();
-  // const [storage, setStorage] = useLocalStorage({
-  //   key: 'auth',
-  //   value: true,
-  //   date: new Date(),
-  //   httpOnly: true,
-  //   path: '/',
-  // });
   const storage = JSON.parse(localStorage.getItem("auth"));
   const d = new Date();
   const [value, onChange] = useState(d);
-  const [dat, setDate] = useState();
-  var date = new Date();
-  // console.log("storage", storage);
-
-
-  const state = { date: new Date(), status: 'Stop' };
-
-  const start = () => {
-    var timer = setInterval(() => {
-      state.date = new Date();
-    }, 1000);
-  };
-
-  // const handleClick = () => {
-  //   if (this.state.status == 'Stop') {
-  //     setState({ status: 'Start' });
-  //     clearInterval(this.timer);
-  //   } else {
-  //     setState({ status: 'Stop' });
-  //     start();
+  // const [date, setDate] = useState();
+  // // var date = new Date();
+  // // console.log("date", date);
+  // function getRealTime() {
+  //   const currentTime = Date.now();
+  //   setDate(new Date(Math.round(currentTime / 1000) * 1000));
+  //   return (Math.floor(currentTime / 1000) + 1) * 1000 - currentTime;
+  // }
+  //
+  // (async function () {
+  //   let reduceTime = 0;
+  //   while (true) {
+  //     reduceTime = getRealTime();
+  //     await sleep(reduceTime);
   //   }
-  // };
+  // })()
+  //
+  // function sleep(ms) {
+  //   return new Promise(resolve => setTimeout(resolve, ms));
+  // }
+  // console.log("storage date", new Date(storage.date));
+  // console.log("date", date);
 
   const lead = {
     name: "Lead name",
@@ -88,6 +81,11 @@ export default function Dashboard() {
     number: "+393452323232",
     state: "new",
     loginDate: storage.date
+  }
+  const dates = {
+    date: date,
+    loginDate: storage.date,
+    sessionLength: count
   }
   const leadStates = [
     {
@@ -141,11 +139,6 @@ export default function Dashboard() {
     }
   ];
 
-  useEffect(() => {
-    start();
-    // console.log("date", storage.date);
-  }, [dat]);
-
   return (
     <AppShell
       padding={20}
@@ -167,8 +160,8 @@ export default function Dashboard() {
           leadNumber={lead.number}
           leadState={lead.state}
           targetName={lead.targetName}
-          loginDate={lead.loginDate}
-          // date={state.date.toLocaleString()}
+          count={count}
+          dates={dates}
         />
       </AppShell.Header>
 

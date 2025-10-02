@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useContext } from 'react';
 import { useDisclosure } from '@mantine/hooks';
 import { useLocalStorage } from '@mantine/hooks';
@@ -30,11 +30,23 @@ import {
 import { Logo1, Logo2, Logo3, Logo4, Logo5, Logo6 } from './Logo.tsx';
 import classes from './Header.module.css';
 
+function secondsToHms(d) {
+    d = Number(d);
+    var h = Math.floor(d / 3600);
+    var m = Math.floor(d % 3600 / 60);
+    var s = Math.floor(d % 3600 % 60);
 
-interface HeaderProps {
-  date: string;
+    var hDisplay = h > 0 ? h + (h == 1 ? " hour, " : " hours, ") : "";
+    var mDisplay = m > 0 ? m + (m == 1 ? " minute, " : " minutes, ") : "";
+    var sDisplay = s > 0 ? s + (s == 1 ? " second" : " seconds") : "";
+    return hDisplay + mDisplay + sDisplay;
 }
-export function Header({ leadName, leadNumber, leadState, targetName, loginDate, date }: HeaderProps) {
+
+// interface HeaderProps {
+//   date: Date;
+// }
+// export function Header({ leadName, leadNumber, leadState, targetName, loginDate, date, count }: HeaderProps) {
+export function Header({ leadName, leadNumber, leadState, targetName, dates, count }) {
   const { colorScheme, setColorScheme, clearColorScheme } = useMantineColorScheme();
   const dark = (colorScheme === "dark");
   const theme = useMantineTheme();
@@ -46,6 +58,15 @@ export function Header({ leadName, leadNumber, leadState, targetName, loginDate,
     path: '/',
   });
   const [loggedIn, setLoggedIn] = useState(false);
+  // const [date, setDate] = useState(dates.date.toLocaleString())
+
+  const sessionLength = parseInt((dates.date.getTime() - new Date(dates.loginDate).getTime()) / 1000);
+
+  // useState(() => {
+  //   setDate(dates.date.toLocaleString())
+  // }, [dates]);
+  // console.log("loginDate", dates.loginDate);
+  // console.log("date", dates.date);
 
 
   return (
@@ -61,8 +82,9 @@ export function Header({ leadName, leadNumber, leadState, targetName, loginDate,
 
         <Group className={classes.controls}>
           <Stack gap={0}>
-            <Text fz={12} component="tt">Ingresso: {loginDate}</Text>
-            <Text fz={12} component="tt">Data: {date}</Text>
+          <Text color="dimmed" fz={12} component="tt">Data: <b>{dates.date.toLocaleString()}</b></Text>
+            <Text color="dimmed" fz={12} component="tt">Login: {new Date(dates.loginDate).toLocaleString()}</Text>
+            <Text color="dimmed" fz={12} component="tt">Durata sessione: <b>{secondsToHms(sessionLength)}</b></Text>
           </Stack>
 
           <Stack gap={0}>
@@ -125,7 +147,7 @@ export function Header({ leadName, leadNumber, leadState, targetName, loginDate,
               <Menu.Item
                 leftSection={<IconLogout size={16} stroke={1.5} color={theme.colors.blue[5]} />}
                 onClick={() => {
-                  clearColorScheme();
+                  // clearColorScheme();
                   setStorage({
                     name: 'auth',
                     value: false,

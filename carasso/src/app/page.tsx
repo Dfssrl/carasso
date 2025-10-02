@@ -13,6 +13,8 @@ export default function Home() {
   const router = useRouter();
   const { toggleColorScheme } = useMantineColorScheme();
   const [loggedIn, setLoggedIn] = useState(null);
+  const [date, setDate] = useState(new Date());
+  const [count, setCount] = useState(0)
   const [storage, setStorage] = useLocalStorage({
     key: 'auth',
     value: loggedIn,
@@ -35,6 +37,26 @@ export default function Home() {
     }
   }, [storage]);
 
+  let timer
+
+  const updateCount = () => {
+    timer = !timer && setInterval(() => {
+      // console.log('ticking', count)
+      setCount(prevCount => prevCount + 1)
+      setDate(new Date())
+    }, 1000)
+
+    // if (count === 3) {
+    //   console.log('stop!')
+    //   clearInterval(timer)
+    // }
+    // console.log("date", date);
+  }
+
+  useEffect(() => {
+    updateCount()
+    return () => clearInterval(timer)
+  }, [count]);
 
   // Loading state
   if (loggedIn === null) {
@@ -44,6 +66,6 @@ export default function Home() {
   if (!loggedIn) {
     return <Login loggedIn={loggedIn} setLoggedIn={setLoggedIn} />;
   } else {
-    return <Dashboard />;
+    return <Dashboard count={count} date={date} />;
   }
 }
