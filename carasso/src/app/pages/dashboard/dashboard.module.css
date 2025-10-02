@@ -14,3 +14,14 @@
     justify-self: flex-start;
     padding-inline: var(--mantine-spacing-md);
 }
+
+.body {
+  background-color: var(--mantine-color-body);
+  padding: 0;
+  /* height: 91.5vh; */
+  position: absolute;
+  left: 300px;
+  right: 290px;
+  bottom: 0;
+  top: 80px;
+}

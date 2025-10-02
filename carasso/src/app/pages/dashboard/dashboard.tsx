@@ -2,23 +2,34 @@
 import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
 import { useDisclosure } from '@mantine/hooks';
+import { useLocalStorage } from '@mantine/hooks';
+import { Loader } from '@mantine/core';
 
 import type { NextConfig } from 'next';
 import {
   AppShell,
+  Box,
   Burger,
   Button,
   Center,
+  Container,
   Group,
   Indicator,
   Stack,
   Text
 } from '@mantine/core';
 import {
-  IconPlayerPlayFilled,
-  IconPlayerPauseFilled,
-  IconPlayerStopFilled,
   IconBrandWhatsappFilled,
+  IconPhonePlus,
+  IconPlayerPauseFilled,
+  IconPlayerPlayFilled,
+  IconPlayerStopFilled,
+  IconBan,
+  IconCalendarCheck,
+  IconCellSignalOff,
+  IconCurrentLocationOff,
+  IconPhoneOff,
+  IconTimeDuration15,
 } from '@tabler/icons-react';
 import {
   Calendar,
@@ -34,32 +45,106 @@ import Auth from '../../components/auth';
 
 import '@mantine/core/styles.css';
 import '@mantine/dates/styles.css';
-import classes from './app.module.css';
+import classes from './dashboard.module.css';
 
 export default function Dashboard() {
   const [opened, { toggle }] = useDisclosure();
+  // const [storage, setStorage] = useLocalStorage({
+  //   key: 'auth',
+  //   value: true,
+  //   date: new Date(),
+  //   httpOnly: true,
+  //   path: '/',
+  // });
+  const storage = JSON.parse(localStorage.getItem("auth"));
   const d = new Date();
   const [value, onChange] = useState(d);
-  const [date, setDate] = useState(d);
+  const [dat, setDate] = useState();
+  var date = new Date();
+  // console.log("storage", storage);
 
-  function updateClock() {
-    // console.log(date);
-    return dayjs(date).format('DD/MM/YYYY HH:mm');
+
+  const state = { date: new Date(), status: 'Stop' };
+
+  const start = () => {
+    var timer = setInterval(() => {
+      state.date = new Date();
+    }, 1000);
+  };
+
+  // const handleClick = () => {
+  //   if (this.state.status == 'Stop') {
+  //     setState({ status: 'Start' });
+  //     clearInterval(this.timer);
+  //   } else {
+  //     setState({ status: 'Stop' });
+  //     start();
+  //   }
+  // };
+
+  const lead = {
+    name: "Lead name",
+    targetName: "Nome centro estetico",
+    number: "+393452323232",
+    state: "new",
+    loginDate: storage.date
   }
-
-  const leadName = "Lead Name";
-  const leadNumber = "+393452323232";
-  var dateMDY = updateClock(date);
-  const leadState = "Stato del lead";
-  const targetName = "Nome centro estetico";
+  const leadStates = [
+    {
+      state: "new",
+      label: 'Nuovo',
+      color: "yellow",
+      loading: true,
+      icon: <IconPhonePlus color="yellow" size={18} />
+    },
+    {
+      state: "appointed",
+      label: 'Appuntamento fissato',
+      color: "green",
+      loading: false,
+      icon: <IconCalendarCheck color="green" size={18} />
+    },
+    {
+      state: "not-replied",
+      label: 'Non risposto',
+      color: "yellow",
+      loading: false,
+      icon: <IconPhoneOff color="yellow" size={18} />
+    },
+    {
+      state: "recall",
+      label: 'Da richiamare',
+      color: "orange",
+      loading: false,
+      icon: <IconTimeDuration15 color="orange" size={18} />
+    },
+    {
+      state: "Out",
+      label: 'Fuori zona',
+      color: "violet",
+      loading: false,
+      icon: <IconCellSignalOff color="violet" size={18} />
+    },
+    {
+      state: "not-interested",
+      label: 'Non interessato',
+      color: "red",
+      loading: false,
+      icon: <IconBan color="#f88" size={18} />
+    },
+    {
+      state: "not-target",
+      label: 'Non in target',
+      color: "gray.5",
+      loading: false,
+      icon: <IconCurrentLocationOff color="gray" size={18} />
+    }
+  ];
 
   useEffect(() => {
-    const intervalID = setInterval(() => updateClock(date), 1000);
-    var dateMDY = updateClock(date);
-    console.log("dateMDY", dateMDY);
-
-    return () => clearInterval(intervalID);
-  }, [date]);
+    start();
+    // console.log("date", storage.date);
+  }, [dat]);
 
   return (
     <AppShell
@@ -78,11 +163,12 @@ export default function Dashboard() {
     >
       <AppShell.Header>
         <Header
-          leadName={leadName}
-          leadNumber={leadNumber}
-          leadState={leadState}
-          targetName={targetName}
-          date={dateMDY}
+          leadName={lead.name}
+          leadNumber={lead.number}
+          leadState={lead.state}
+          targetName={lead.targetName}
+          loginDate={lead.loginDate}
+          // date={state.date.toLocaleString()}
         />
       </AppShell.Header>
 
@@ -137,7 +223,7 @@ export default function Dashboard() {
       </AppShell.Navbar>
 
       <AppShell.Aside px={20} pt={20} align="center">
-        <RightNavbar date={dateMDY} />
+        <RightNavbar date={lead.loginDate} />
 
         <AppShell.Section mb={20} p={0}>
           {/* BUTTONS */}
@@ -179,8 +265,10 @@ export default function Dashboard() {
         </AppShell.Section>
       </AppShell.Aside>
 
-      <AppShell.Main>
-        Page content
+      <AppShell.Main pt={84} pl={299} pr={290} pb={0}>
+        <Box m={0} p={20} className={classes.body}>
+          <Loader color="gray" size="sm" type="bars" ml="50%" mt="40vh" />
+        </Box>
       </AppShell.Main>
     </AppShell>
   );
