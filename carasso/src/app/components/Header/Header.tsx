@@ -36,17 +36,23 @@ function secondsToHms(d) {
     var m = Math.floor(d % 3600 / 60);
     var s = Math.floor(d % 3600 % 60);
 
-    var hDisplay = h > 0 ? h + (h == 1 ? " hour, " : " hours, ") : "";
-    var mDisplay = m > 0 ? m + (m == 1 ? " minute, " : " minutes, ") : "";
-    var sDisplay = s > 0 ? s + (s == 1 ? " second" : " seconds") : "";
+    var hDisplay = h > 0 ? h + (h == 1 ? " ora, " : " ore, ") : "";
+    var mDisplay = m > 0 ? m + (m == 1 ? " minuto, " : " minuti, ") : "";
+    var sDisplay = s > 0 ? s + (s == 1 ? " secondo" : " secondi") : "";
     return hDisplay + mDisplay + sDisplay;
 }
 
-// interface HeaderProps {
-//   date: Date;
-// }
-// export function Header({ leadName, leadNumber, leadState, targetName, loginDate, date, count }: HeaderProps) {
-export function Header({ leadName, leadNumber, leadState, targetName, dates, count }) {
+export function Header({
+  leadName,
+  leadNumber,
+  leadState,
+  current_label,
+  color,
+  label,
+  targetName,
+  dates,
+  count
+}) {
   const { colorScheme, setColorScheme, clearColorScheme } = useMantineColorScheme();
   const dark = (colorScheme === "dark");
   const theme = useMantineTheme();
@@ -58,21 +64,12 @@ export function Header({ leadName, leadNumber, leadState, targetName, dates, cou
     path: '/',
   });
   const [loggedIn, setLoggedIn] = useState(false);
-  // const [date, setDate] = useState(dates.date.toLocaleString())
-
   const sessionLength = parseInt((dates.date.getTime() - new Date(dates.loginDate).getTime()) / 1000);
 
-  // useState(() => {
-  //   setDate(dates.date.toLocaleString())
-  // }, [dates]);
-  // console.log("loginDate", dates.loginDate);
-  // console.log("date", dates.date);
-
-
   return (
-    <header className={classes.header}>
+    <header className={dark ? classes.header : classes.header_white}>
       <Container fluid className={classes.inner}>
-        <Box px={5} w={400}>
+        <Box px={5} w={380}>
           <Logo4
            width={160}
            height={160}
@@ -80,9 +77,9 @@ export function Header({ leadName, leadNumber, leadState, targetName, dates, cou
           />
         </Box>
 
-        <Group className={classes.controls}>
+        <Group className={classes.controls} grow>
           <Stack gap={0}>
-          <Text color="dimmed" fz={12} component="tt">Data: <b>{dates.date.toLocaleString()}</b></Text>
+            <Text color="dimmed" fz={12} component="tt">Data: <b>{dates.date.toLocaleString()}</b></Text>
             <Text color="dimmed" fz={12} component="tt">Login: {new Date(dates.loginDate).toLocaleString()}</Text>
             <Text color="dimmed" fz={12} component="tt">Durata sessione: <b>{secondsToHms(sessionLength)}</b></Text>
           </Stack>
@@ -97,71 +94,76 @@ export function Header({ leadName, leadNumber, leadState, targetName, dates, cou
             >
               {leadName}
             </Text>
-            <Text ta="center" fz={14}>{targetName}</Text>
+            <Text ta="center" color="dimmed" fz={14}>{targetName}</Text>
           </Stack>
-            <Stack gap={0} align="flex-end">
-              <Badge size="sm" variant="light" color="yellow">{leadState}</Badge>
-              <Text ta="left" fz={20} color="dimmed" component="tt">{leadNumber}</Text>
-            </Stack>
+          <Stack gap={0} align="flex-end">
+            <Badge size="sm" variant="light" color={color}>{current_label}</Badge>
+            <Text ta="left" fw={100} fz={20} color="dimmed" component="tt">{leadNumber}</Text>
+          </Stack>
+
+          <Group wrap="nowrap" gap={0} justify="flex-end" className={classes.call_button}>
+            <Button
+              color="green.7"
+              rightSection={<IconPhone />}
+              radius={10}
+              pb={3}
+              className={classes.button}
+            >
+              <Text>Chiama</Text>
+            </Button>
+            <Menu
+              transitionProps={{ transition: 'pop' }}
+              position="bottom-end"
+              withinPortal
+            >
+              <Menu.Target>
+                <ActionIcon
+                  variant="filled"
+                  color="teal.9"
+                  size={36}
+                  className={classes.menuControl}
+                >
+                  <IconChevronDown size={16} stroke={1.5} />
+                </ActionIcon>
+              </Menu.Target>
+              <Menu.Dropdown>
+                <Menu.Item
+                  leftSection={
+                    dark ? (
+                      <IconSun style={{ width: 18, height: 18 }} />
+                    ) : (
+                      <IconMoon style={{ width: 18, height: 18 }} />
+                    )
+                  }
+                  color={dark ? 'yellow' : 'blue'}
+                  onClick={() => setColorScheme(!dark ? 'dark' : 'light')}
+                  title="Toggle color scheme"
+                  >
+                  {(dark) ? "Tema chiaro" : "Tema scuro"}
+                </Menu.Item>
+
+                <Menu.Divider />
+
+                <Menu.Item
+                  leftSection={<IconLogout size={16} stroke={1.5} color={theme.colors.blue[5]} />}
+                  onClick={() => {
+                    // clearColorScheme();
+                    setStorage({
+                      name: 'auth',
+                      value: false,
+                      httpOnly: true,
+                      path: '/',
+                    });
+                    setLoggedIn(false);
+                  }}
+                  >
+                  Logout
+                </Menu.Item>
+              </Menu.Dropdown>
+            </Menu>
+          </Group>
         </Group>
 
-        <Group wrap="nowrap" gap={0} w={260} ml={20}>
-          <Button
-            color="green.7"
-            rightSection={<IconPhone />}
-            radius={10}
-            pb={3}
-            className={classes.button}
-          >
-            <Text>Chiama lead</Text>
-          </Button>
-          <Menu transitionProps={{ transition: 'pop' }} position="bottom-end" withinPortal>
-            <Menu.Target>
-              <ActionIcon
-                variant="filled"
-                color="teal.9"
-                size={36}
-                className={classes.menuControl}
-              >
-                <IconChevronDown size={16} stroke={1.5} />
-              </ActionIcon>
-            </Menu.Target>
-            <Menu.Dropdown>
-              <Menu.Item
-                leftSection={
-                  dark ? (
-                    <IconSun style={{ width: 18, height: 18 }} />
-                  ) : (
-                    <IconMoon style={{ width: 18, height: 18 }} />
-                  )
-                }
-                color={dark ? 'yellow' : 'blue'}
-                onClick={() => setColorScheme(!dark ? 'dark' : 'light')}
-                title="Toggle color scheme"
-              >
-                {(dark) ? "Tema chiaro" : "Tema scuro"}
-              </Menu.Item>
-
-              <Menu.Divider />
-
-              <Menu.Item
-                leftSection={<IconLogout size={16} stroke={1.5} color={theme.colors.blue[5]} />}
-                onClick={() => {
-                  // clearColorScheme();
-                  setStorage({
-                    name: 'auth',
-                    value: false,
-                    httpOnly: true,
-                    path: '/',
-                  });
-                  setLoggedIn(false);
-                }}
-              >
-                Logout
-              </Menu.Item>
-            </Menu.Dropdown>
-          </Menu>
-        </Group>
       </Container>
     </header>
   );

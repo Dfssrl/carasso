@@ -1,7 +1,14 @@
 .header {
   height: 84px;
   /* margin-bottom: 120px; */
-  background-color: var(--mantine-color-body);
+  background-color: #242424;
+  border-bottom: 1px solid light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-4));
+  flex-direction: column;
+}
+.header_white {
+  height: 84px;
+  /* margin-bottom: 120px; */
+  background-color: #fefefe;
   border-bottom: 1px solid light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-4));
   flex-direction: column;
 }
@@ -17,6 +24,7 @@
   width: 100%;
   justify-content: space-between;
   display: flex;
+  padding: 0
 }
 
 .links {
@@ -25,6 +33,9 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+}
+.call_button {
+  max-width: 200px;
 }
 
 .mainLinks {

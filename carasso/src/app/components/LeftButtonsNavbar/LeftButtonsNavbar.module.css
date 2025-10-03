@@ -1,9 +1,10 @@
 .navbar {
   background-color: light-dark(var(--mantine-color-white), var(--mantine-color-dark-6));
   /* height: 800px; */
-  width: 300px;
-  padding: 0px 20px 0 20px;
-  /* height: calc(100dvh - var(--app-shell-header-height)); */
+  width: 280px;
+  padding: 0px;
+  height: calc(100dvh - var(--app-shell-header-height));
+  margin-left: -10px
   /* margin-left: calc(var(--mantine-spacing-md) * -1); */
   /* padding-bottom: 0; */
   /* gap: 0; */
@@ -22,7 +23,7 @@
 }
 
 .links {
-  border: #444 1px solid;
+  /* border: 1px solid light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-4)); */
   border-radius: 8px;
   flex: 1;
   /* margin-left: calc(var(--mantine-spacing-md) * -1); */
@@ -43,12 +44,20 @@
 }
 
 .button {
-  border-color: dark(var(--mantine-color-gray-3));
+  /* border-color: var(--mantine-color-gray-5);
   border-width: 1px;
-  border-style: solid;
+  border-style: dotted; */
 
+  &:hover {
+    border-style: solid;
+    border-width: 2px;
+  }
   /* &:disabled,
   &[data-disabled] {
     background-color: transparent;
   } */
+}
+
+.mantine-TimeGrid-control {
+  padding-left: 10px;
 }

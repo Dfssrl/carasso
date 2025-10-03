@@ -8,9 +8,11 @@ import {
 import {
   ActionIcon,
   Button,
+  Center,
   Container,
   Flex,
   Group,
+  Loader,
   Paper,
   ScrollArea,
   Stack,
@@ -56,19 +58,22 @@ export function RightNavbar({date}) {
 
   return (
     <nav className={classes.navbar}>
-      <Text mb={10}>Risposte moduli</Text>
+      <Text color="dimmed" mb={10}>Risposte moduli</Text>
       <Container
         valign="top"
         strategy="grid"
         bg="var(--mantine-color-blue-light)"
+        radius={10}
         p={10}
         mb={20}
       >
-      ...
+        <Center>
+          <Loader color="gray.7" size="xs" type="dots" />
+        </Center>
       </Container>
 
       {/* NOTES */}
-      <Text mt={40} mb={5}>Note aggiuntive</Text>
+      <Text color="dimmed" mt={40} mb={5}>Note aggiuntive</Text>
       <TextInput
         key="note"
         size="xs"

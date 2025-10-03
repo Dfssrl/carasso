@@ -1,9 +1,7 @@
 "use client";
-import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
-import { useDisclosure } from '@mantine/hooks';
-import { useLocalStorage } from '@mantine/hooks';
-import { Loader } from '@mantine/core';
+import { useDisclosure, useLocalStorage } from '@mantine/hooks';
+import dayjs from 'dayjs';
 
 import type { NextConfig } from 'next';
 import {
@@ -15,8 +13,10 @@ import {
   Container,
   Group,
   Indicator,
+  Loader,
   Stack,
-  Text
+  Text,
+  useMantineColorScheme
 } from '@mantine/core';
 import {
   IconBrandWhatsappFilled,
@@ -31,12 +31,6 @@ import {
   IconPhoneOff,
   IconTimeDuration15,
 } from '@tabler/icons-react';
-import {
-  Calendar,
-  MiniCalendar,
-  getTimeRange,
-  TimeGrid
-} from '@mantine/dates';
 
 import { Header } from '../../components/Header/Header.tsx';
 import { LeftButtonsNavbar } from '../../components/LeftButtonsNavbar/LeftButtonsNavbar.tsx';
@@ -48,70 +42,52 @@ import '@mantine/dates/styles.css';
 import classes from './dashboard.module.css';
 
 export default function Dashboard({ count, date }) {
+  const { colorScheme, setColorScheme, clearColorScheme } = useMantineColorScheme();
+  const dark = (colorScheme === "dark");
   const [opened, { toggle }] = useDisclosure();
   const storage = JSON.parse(localStorage.getItem("auth"));
-  const d = new Date();
-  const [value, onChange] = useState(d);
-  // const [date, setDate] = useState();
-  // // var date = new Date();
-  // // console.log("date", date);
-  // function getRealTime() {
-  //   const currentTime = Date.now();
-  //   setDate(new Date(Math.round(currentTime / 1000) * 1000));
-  //   return (Math.floor(currentTime / 1000) + 1) * 1000 - currentTime;
-  // }
-  //
-  // (async function () {
-  //   let reduceTime = 0;
-  //   while (true) {
-  //     reduceTime = getRealTime();
-  //     await sleep(reduceTime);
-  //   }
-  // })()
-  //
-  // function sleep(ms) {
-  //   return new Promise(resolve => setTimeout(resolve, ms));
-  // }
-  // console.log("storage date", new Date(storage.date));
-  // console.log("date", date);
+  const [leadStatus, setLeadStatus] = useState("new");
 
-  const lead = {
-    name: "Lead name",
-    targetName: "Nome centro estetico",
-    number: "+393452323232",
-    state: "new",
-    loginDate: storage.date
-  }
-  const dates = {
-    date: date,
-    loginDate: storage.date,
-    sessionLength: count
-  }
+  /**
+   * Lead States
+   * @type {Array}
+   *
+   * - state
+   * - label
+   * - current_status
+   * - color
+   * - loading
+   * - icon
+   */
   const leadStates = [
     {
       state: "new",
       label: 'Nuovo',
-      color: "yellow",
-      loading: true,
-      icon: <IconPhonePlus color="yellow" size={18} />
+      current_status: (leadStatus == "new"),
+      color: "green",
+      loading: false,
+      icon: <IconPhonePlus color="green" size={18} />
     },
     {
       state: "appointed",
       label: 'Appuntamento fissato',
-      color: "green",
+      current_status: (leadStatus == "appointed"),
+      color: "teal",
       loading: false,
-      icon: <IconCalendarCheck color="green" size={18} />
+      icon: <IconCalendarCheck color="teal" size={18} />
     },
     {
       state: "not-replied",
       label: 'Non risposto',
-      color: "yellow",
+      current_status: (leadStatus == "not-replied"),
+      color: "cyan",
       loading: false,
-      icon: <IconPhoneOff color="yellow" size={18} />
+      icon: <IconPhoneOff color="cyan" size={18} />
     },
     {
       state: "recall",
       label: 'Da richiamare',
+      current_status: (leadStatus == "recall"),
       color: "orange",
       loading: false,
       icon: <IconTimeDuration15 color="orange" size={18} />
@@ -119,6 +95,7 @@ export default function Dashboard({ count, date }) {
     {
       state: "Out",
       label: 'Fuori zona',
+      current_status: (leadStatus == "Out"),
       color: "violet",
       loading: false,
       icon: <IconCellSignalOff color="violet" size={18} />
@@ -126,6 +103,7 @@ export default function Dashboard({ count, date }) {
     {
       state: "not-interested",
       label: 'Non interessato',
+      current_status: (leadStatus == "not-interested"),
       color: "red",
       loading: false,
       icon: <IconBan color="#f88" size={18} />
@@ -133,11 +111,44 @@ export default function Dashboard({ count, date }) {
     {
       state: "not-target",
       label: 'Non in target',
+      current_status: (leadStatus == "not-target"),
       color: "gray.5",
       loading: false,
       icon: <IconCurrentLocationOff color="gray" size={18} />
     }
   ];
+
+  // Fetch DB data
+  // ...
+      /**
+       * Current lead data
+       * @type {Object}
+       *
+       * - name
+       * - targetName
+       * - number
+       * - state
+       * - loginDate
+       */
+      const lead = {
+        name: "Lead name",
+        targetName: "Nome centro estetico",
+        number: "+393452323232",
+        state: "new",
+        loginDate: storage.date
+      }
+  // ...
+
+
+  const dates = {
+    date: date,
+    loginDate: storage.date,
+    sessionLength: count
+  }
+  const state = leadStates.filter((item, i) => (lead.state === item.state) && item)[0]);
+  const current_status = leadStates.filter((item, i) => (lead.state === item.state) && item)[0].current_status)
+  const current_color = leadStates.filter((item, i) => (leadStatus === item.state) && item)[0].color)
+  const current_label = leadStates.filter((item, i) => (leadStatus === item.state) && item)[0].label)
 
   return (
     <AppShell
@@ -149,6 +160,10 @@ export default function Dashboard({ count, date }) {
         width: 300,
         breakpoint: 'sm',
         collapsed: { mobile: !opened },
+        collapsed: { mobile: !opened },
+      }}
+      aside={{
+        collapsed: { mobile: !opened },
       }}
       footer={{
         width: 300,
@@ -159,50 +174,24 @@ export default function Dashboard({ count, date }) {
           leadName={lead.name}
           leadNumber={lead.number}
           leadState={lead.state}
+          current_label={current_label}
+          color={current_color}
+          label={state.label}
           targetName={lead.targetName}
           count={count}
           dates={dates}
         />
       </AppShell.Header>
 
-      <AppShell.Navbar px={20} pt={20} align="center">
-        <Stack align="center" justify="flex-start" gap={40}>
-          <Center>
-            <Button.Group>
-              <Button variant="default" size="xs">Cabina 1</Button>
-              <Button variant="default" size="xs">Cabina 2</Button>
-              <Button variant="default" size="xs">Cabina 3</Button>
-            </Button.Group>
-          </Center>
+      <AppShell.Navbar px={20} pt={20} align="center" bg={dark ? "#242424" : "#fefefe"}>
+        <LeftButtonsNavbar
+          leadStates={leadStates}
+          leadStatus={leadStatus}
+          setLeadStatus={setLeadStatus}
+          current_status={current_status}
+        />
 
-          <MiniCalendar
-            value={value}
-            onChange={onChange}
-            numberOfDays={5}
-            getDayProps={(date) => ({
-              style: {
-                color: [0, 6].includes(dayjs(date).day()) ? 'var(--mantine-color-red-8)' : undefined,
-              },
-            })}
-          />
-
-          <TimeGrid
-            data={getTimeRange({
-              startTime: '09:00',
-              endTime: '18:00',
-              interval: '00:30'
-            })}
-            disableTime={['13:30', '14:00']}
-            defaultValue={"09:00"}
-            withSeconds={false}
-            allowDeselect
-            simpleGridProps={{ cols: 4, spacing: 'xs' }}
-          />
-
-          <LeftButtonsNavbar />
-        </Stack>
-
-        <AppShell.Section my={30} p={0}>
+        <AppShell.Section mb={20} p={0}>
           <Button
             size="lg"
             color="green"
@@ -215,7 +204,7 @@ export default function Dashboard({ count, date }) {
         </AppShell.Section>
       </AppShell.Navbar>
 
-      <AppShell.Aside px={20} pt={20} align="center">
+      <AppShell.Aside px={20} pt={20} align="center" bg={dark ? "#242424" : "#fefefe"}>
         <RightNavbar date={lead.loginDate} />
 
         <AppShell.Section mb={20} p={0}>
@@ -258,9 +247,19 @@ export default function Dashboard({ count, date }) {
         </AppShell.Section>
       </AppShell.Aside>
 
-      <AppShell.Main pt={84} pl={299} pr={290} pb={0}>
-        <Box m={0} p={20} className={classes.body}>
-          <Loader color="gray" size="sm" type="bars" ml="50%" mt="40vh" />
+      <AppShell.Main pt={84} pl={299} pr={290} pb={0} bg={dark ? "#242424" : "#fefefe"}>
+        <Box
+          m={0}
+          p={20}
+          className={dark ? classes.body : classes.body_white}
+        >
+          <Loader
+            color={(dark ? 'var(--mantine-color-blue-9)' : 'var(--mantine-color-blue-2)')}
+            size="sm"
+            type="bars"
+            ml="50%"
+            mt="40vh"
+          />
         </Box>
       </AppShell.Main>
     </AppShell>

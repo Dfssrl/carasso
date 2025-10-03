@@ -5,14 +5,14 @@
 }
 /* calendar.module.css */
 .calendar .mantine-Calendar-calendarHeader {
-    display: grid;
-    grid-template-columns: 1fr max-content max-content;
+  display: grid;
+  grid-template-columns: 1fr max-content max-content;
 }
 
 .calendar .mantine-Calendar-calendarHeaderLevel {
-    order: -1;
-    justify-self: flex-start;
-    padding-inline: var(--mantine-spacing-md);
+  order: -1;
+  justify-self: flex-start;
+  padding-inline: var(--mantine-spacing-md);
 }
 
 .body {
@@ -24,4 +24,16 @@
   right: 290px;
   bottom: 0;
   top: 80px;
+  box-shadow: inset 0 0 3em #111;
+}
+.body_white {
+  background-color: var(--mantine-color-body);
+  padding: 0;
+  /* height: 91.5vh; */
+  position: absolute;
+  left: 300px;
+  right: 290px;
+  bottom: 0;
+  top: 80px;
+  box-shadow: inset 0 0 3em #efefef;
 }
