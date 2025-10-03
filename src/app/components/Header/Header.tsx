@@ -69,7 +69,7 @@ export function Header({
   return (
     <header className={dark ? classes.header : classes.header_white}>
       <Container fluid className={classes.inner}>
-        <Box px={5} w={380}>
+        <Box px={5} w={340}>
           <Logo4
            width={160}
            height={160}
