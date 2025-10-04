@@ -34,7 +34,7 @@ import { NavbarLinksGroup, NavbarLinksSaloneVincente } from '../NavbarLinksGroup
 // import { Logo } from './Logo';
 import classes from './LeftButtonsNavbar.module.css';
 
-export function LeftButtonsNavbar({leadStates, leadStatus, setLeadStatus, current_status}) {
+export function LeftButtonsNavbar({leadStates, leadStatus, setLeadStatus, current_status, sessionStatus}) {
   const { colorScheme, setColorScheme, clearColorScheme } = useMantineColorScheme();
   const dark = (colorScheme === "dark");
   const [loading, { toggle }] = useDisclosure();
@@ -44,13 +44,13 @@ export function LeftButtonsNavbar({leadStates, leadStatus, setLeadStatus, curren
   const viewport = useRef<HTMLDivElement>(null);
   const links = leadStates.map((item) => (
       <Button
+        disabled={sessionStatus == "pause"}
         px={0}
         size="md"
         justify="space-between"
         fullWidth
-        // disabled={item.state == leadStatus}
         variant={item.current_status ? "outline" : "subtle"}
-        color={item.color}
+        color={sessionStatus == "pause" ? "gray" : item.color}
         key={item.label}
         rightSection={item.icon}
         px={10}
@@ -75,22 +75,24 @@ export function LeftButtonsNavbar({leadStates, leadStatus, setLeadStatus, curren
       <Stack gap={0}>
         <Center mt={10} mb={40}>
           <Button.Group>
-            <Button variant="outline" color="lime" size="xs">Cabina 1</Button>
-            <Button variant="outline" color="green" size="xs">Cabina 2</Button>
-            <Button variant="outline" color="teal" size="xs">Cabina 3</Button>
+            <Button disabled={sessionStatus == "pause"} variant="outline" color="lime" size="xs">Cabina 1</Button>
+            <Button disabled={sessionStatus == "pause"} variant="outline" color="green" size="xs">Cabina 2</Button>
+            <Button disabled={sessionStatus == "pause"} variant="outline" color="teal" size="xs">Cabina 3</Button>
           </Button.Group>
         </Center>
 
         <MiniCalendar
-          value={value}
-          onChange={onChange}
-          numberOfDays={5}
           pb={30}
+          numberOfDays={5}
+          minDate={dayjs(d).format('YYYY-MM-DD')}
+          maxDate={sessionStatus == "pause" ? dayjs(d).subtract(7, 'year').format('YYYY-MM-DD') : null}
           getDayProps={(date) => ({
             style: {
               color: [0, 6].includes(dayjs(date).day()) ? 'var(--mantine-color-red-8)' : (dark ? 'var(--mantine-color-white-9)' : 'var(--mantine-color-gray-8)'),
             },
           })}
+          value={value}
+          onChange={onChange}
         />
         <ScrollArea.Autosize
           mih={100}
@@ -104,6 +106,7 @@ export function LeftButtonsNavbar({leadStates, leadStatus, setLeadStatus, curren
         >
           <Stack gap={20}>
             <TimeGrid
+              disabled={sessionStatus == "pause"}
               pr={10}
               data={
                 getTimeRange({

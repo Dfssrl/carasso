@@ -6,16 +6,22 @@ import dayjs from 'dayjs';
 import type { NextConfig } from 'next';
 import {
   AppShell,
+  AspectRatio,
   Box,
   Burger,
   Button,
+  Divider,
   Center,
   Container,
   Group,
   Indicator,
   Loader,
+  Overlay,
+  Skeleton,
   Stack,
   Text,
+  Transition,
+  Tooltip,
   useMantineColorScheme
 } from '@mantine/core';
 import {
@@ -41,7 +47,21 @@ import '@mantine/core/styles.css';
 import '@mantine/dates/styles.css';
 import classes from './dashboard.module.css';
 
-export default function Dashboard({ count, date }) {
+export default function Dashboard({
+  count,
+  date,
+  timer,
+  // setInactivityTimerActive,
+  inactivityTimer,
+  idleRemaining,
+  updateCount,
+  stopCount,
+  sessionLength,
+  sessionStatus,
+  setSessionStatus,
+  callingStatus,
+  setCallingStatus,
+}) {
   const { colorScheme, setColorScheme, clearColorScheme } = useMantineColorScheme();
   const dark = (colorScheme === "dark");
   const [opened, { toggle }] = useDisclosure();
@@ -180,6 +200,14 @@ export default function Dashboard({ count, date }) {
           targetName={lead.targetName}
           count={count}
           dates={dates}
+          timer={timer}
+          inactivityTimer={inactivityTimer}
+          idleRemaining={idleRemaining}
+          updateCount={updateCount}
+          stopCount={stopCount}
+          // sessionLength={sessionLength}
+          sessionStatus={sessionStatus}
+          setSessionStatus={setSessionStatus}
         />
       </AppShell.Header>
 
@@ -189,14 +217,16 @@ export default function Dashboard({ count, date }) {
           leadStatus={leadStatus}
           setLeadStatus={setLeadStatus}
           current_status={current_status}
+          sessionStatus={sessionStatus}
         />
 
         <AppShell.Section mb={20} p={0}>
           <Button
+            disabled={sessionStatus == "pause"}
             size="lg"
             color="green"
             fullWidth
-            leftSection={<IconBrandWhatsappFilled />}
+            rightSection={<IconBrandWhatsappFilled />}
             radius={5}
           >
             <Text>Invia link acconto</Text>
@@ -205,61 +235,119 @@ export default function Dashboard({ count, date }) {
       </AppShell.Navbar>
 
       <AppShell.Aside px={20} pt={20} align="center" bg={dark ? "#242424" : "#fefefe"}>
-        <RightNavbar date={lead.loginDate} />
+        <RightNavbar date={lead.loginDate} sessionStatus={sessionStatus} />
 
         <AppShell.Section mb={20} p={0}>
           {/* BUTTONS */}
           <Stack gap={10}>
-            <Group grow gap={5}>
+            <Button.Group>
               <Button
-                disabled
-                size="sm"
-                color="gray"
-                rightSection={<IconPlayerPauseFilled color="gray" opacity={0.70} />}
-                radius={5}
+                disabled={sessionStatus == "pause"}
+                fullWidth
+                size="lg"
+                loading={false}
+                color={(sessionStatus == "play") ? "yellow" : "cyan"}
+                rightSection={
+                  (sessionStatus == "play")
+                    ? <IconPlayerPauseFilled opacity={0.50} />
+                    : <IconPlayerPlayFilled opacity={0.50} />
+                }
+                onClick={() => {
+                  setSessionStatus((sessionStatus == "play") ? "pause" : "play")
+                  if(sessionStatus == "play") { stopCount() } else { updateCount() }
+                }}
               >
-                <Stack gap={0}>
-                  <Text ta="left" fz={14} mt={2}>PAUSA</Text>
-                  <Text ta="left" fz={10} ta="left" mt={-4}>TIMER</Text>
-                </Stack>
+                <Text>Pausa sessione</Text>
               </Button>
-              <Button
-                disabled
-                size="sm"
-                color="dark"
-                rightSection={<IconPlayerStopFilled color="gray" opacity={0.40} />}
-                radius={5}
-              >
-                <Text fz={9} ta="left">INTERROMPI<br/>SESSIONE</Text>
-              </Button>
-            </Group>
-
-            <Button
-              size="lg"
-              color="cyan"
-              fullWidth
-              rightSection={<IconPlayerPlayFilled color="white" opacity={0.65} />}
-              radius={5}
-            >
-              <Text>Prosegui</Text>
-            </Button>
+              <Tooltip label="Interrompi sessione" color="blue.9" position="top-end" withArrow>
+                <Button
+                  size="lg"
+                  variant="light"
+                  color="red"
+                  pl={10}
+                  rightSection={<IconPlayerStopFilled size={30} opacity={0.30} />}
+                >
+                </Button>
+              </Tooltip>
+            </Button.Group>
           </Stack>
         </AppShell.Section>
       </AppShell.Aside>
 
-      <AppShell.Main pt={84} pl={299} pr={290} pb={0} bg={dark ? "#242424" : "#fefefe"}>
+      <AppShell.Main pt={84} pl={299} pr={317} pb={0} bg={dark ? "#242424" : "#fefefe"}>
         <Box
           m={0}
           p={20}
           className={dark ? classes.body : classes.body_white}
         >
-          <Loader
-            color={(dark ? 'var(--mantine-color-blue-9)' : 'var(--mantine-color-blue-2)')}
-            size="sm"
-            type="bars"
-            ml="50%"
-            mt="40vh"
-          />
+          {
+            (sessionStatus == "pause")
+              ? <>
+                  <Transition
+                    mounted={true}
+                    transition="fade"
+                    duration={200}
+                    timingFunction="ease"
+                    keepMounted
+                  >
+                    {(styles) => <div>
+                      <Overlay
+                        color={dark ? "#000" : "#000"}
+                        backgroundOpacity={dark ? 0.4 : 0.2}
+                        blur={6}
+                        zIndex={200}
+                      />
+                    </div>}
+                  </Transition>
+                  <Stack px="10vw" pt="15vh" align="flex-start" className={classes.stack_overlay}>
+                    <Group mb={120}>
+                      <IconPlayerPauseFilled size={100} color="var(--mantine-color-orange-filled" opacity={dark ? 0.4 : 0.5} />
+                      <Stack gap={0}>
+                      <Text color={dark ? "dimmed" : "dark"} fz={50}>Sessione in pausa</Text>
+                        <Text color={dark ? "dimmed" : "gray.7"} fz={16} mt={20}>
+                        La sessione è stata interrotta manualmente o si è attivata per una inattività di oltre 10 minuti.
+                        </Text>
+                      </Stack>
+                    </Group>
+                    <Stack>
+                      <Button
+                        size="lg"
+                        fullWidth={false}
+                        loading={false}
+                        color="teal.5"
+                        rightSection={<IconPlayerPlayFilled size={30} opacity={0.50} />}
+                        onClick={() => {
+                          // setInactivityTimerActive(false);
+                          setSessionStatus((sessionStatus == "play") ? "pause" : "play")
+                          if(sessionStatus == "play") { stopCount() } else { updateCount() }
+                        }}
+                      >
+                        <Text>Riprendi sessione</Text>
+                      </Button>
+                      <Divider my="md" color={dark ? "gray.7" : "gray.4"} />
+                      <Button
+                        size="xs"
+                        variant={dark ? "light" : ""}
+                        color="red.5"
+                        pl={10}
+                        rightSection={<IconPlayerStopFilled size={20} opacity={0.30} />}
+                      >
+                        <Text fz={13}>Interrompi sessione</Text>
+                      </Button>
+                    </Stack>
+                    <Skeleton height={8} mt={50} radius="xl" />
+                    <Skeleton height={8} mt={6} radius="xl" />
+                    <Skeleton height={8} mt={6} width="70%" radius="xl" />
+                  </Stack>
+                </>
+              : <Loader
+                  color={(dark ? 'var(--mantine-color-blue-9)' : 'var(--mantine-color-blue-2)')}
+                  size="sm"
+                  type="bars"
+                  ml="50%"
+                  mt="40vh"
+                />
+          }
         </Box>
       </AppShell.Main>
     </AppShell>

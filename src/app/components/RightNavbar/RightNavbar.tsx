@@ -19,6 +19,7 @@ import {
   Text,
   TextInput,
   UnstyledButton,
+  useMantineColorScheme
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import {
@@ -31,7 +32,9 @@ import { NavbarLinksGroup, NavbarLinksSaloneVincente } from '../NavbarLinksGroup
 // import { Logo } from './Logo';
 import classes from './RightNavbar.module.css';
 
-export function RightNavbar({date}) {
+export function RightNavbar({date, sessionStatus}) {
+  const { colorScheme, setColorScheme, clearColorScheme } = useMantineColorScheme();
+  const dark = (colorScheme === "dark");
   const [notes, handlers] = useListState([]);
   const viewport = useRef<HTMLDivElement>(null);
   const scrollToTop = () => viewport.current!.scrollTo(
@@ -44,13 +47,12 @@ export function RightNavbar({date}) {
     { top: viewport.current!.scrollHeight, behavior: 'smooth' }
   );
 
-  const handleKeyPress = e => {
+  const saveNote = e => {
     if (e.key === 'Enter' && e.currentTarget.value.length > 1) {
-      // AsyncStorage.setItem('any_key_here', value);
-      console.log(e.currentTarget.value, date);
+      // Save in database
+
       handlers.prepend({text: e.currentTarget.value, date: date.toString()});
       e.currentTarget.value = "";
-      // scrollToTop();
     }
   };
 
@@ -76,14 +78,11 @@ export function RightNavbar({date}) {
       <Text color="dimmed" mt={40} mb={5}>Note aggiuntive</Text>
       <TextInput
         key="note"
+        disabled={sessionStatus == "pause"}
         size="xs"
         description="Inserisci una nota e premi Invio per salvarla"
         placeholder="Inserisci una nota..."
-        // inputWrapperOrder={['label', 'input', 'description', 'error']}
-        onChange={(e) => {
-          // e.currentTarget.value = "";
-        }}
-        onKeyPress={e => handleKeyPress(e)}
+        onKeyPress={e => saveNote(e)}
       />
 
       {(notes.length > 0) && <Paper
@@ -120,6 +119,7 @@ export function RightNavbar({date}) {
                   </Text>
 
                   <Button
+                    disabled={sessionStatus == "pause"}
                     color="white"
                     variant="subtle"
                     // size="xs"

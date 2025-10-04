@@ -87,3 +87,12 @@
   border: 0;
   border-left: 1px solid var(--mantine-color-body);
 }
+
+@keyframes blinker {
+  to {
+    visibility: hidden;
+  }
+}
+.blinking {
+  animation: blinker 2s steps(2, start) infinite,
+}

@@ -17,23 +17,27 @@
 
 .body {
   background-color: var(--mantine-color-body);
-  padding: 0;
-  /* height: 91.5vh; */
-  position: absolute;
+  /* padding: 0; */
+  height: 91.5vh;
+  /* position: absolute;
   left: 300px;
   right: 290px;
   bottom: 0;
-  top: 80px;
+  top: 80px; */
   box-shadow: inset 0 0 3em #111;
 }
 .body_white {
   background-color: var(--mantine-color-body);
-  padding: 0;
-  /* height: 91.5vh; */
-  position: absolute;
+  /* padding: 0; */
+  height: 91.5vh;
+  /* position: absolute;
   left: 300px;
   right: 290px;
   bottom: 0;
-  top: 80px;
+  top: 80px; */
   box-shadow: inset 0 0 3em #efefef;
+}
+.stack_overlay {
+  position: absolute;
+  z-index: 1000;
 }

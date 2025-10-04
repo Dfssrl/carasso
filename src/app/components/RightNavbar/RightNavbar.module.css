@@ -1,7 +1,7 @@
 .navbar {
   background-color: light-dark(var(--mantine-color-white), var(--mantine-color-dark-6));
   /* height: 800px; */
-  width: 250px;
+  width: 280px;
   height: calc(100dvh - var(--app-shell-header-height));
   /* padding: 0px 20px 0 20px; */
   /* right: 0; */
