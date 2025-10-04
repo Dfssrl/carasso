@@ -10,9 +10,9 @@ import {
   Box,
   Burger,
   Button,
-  Divider,
   Center,
   Container,
+  Divider,
   Group,
   Indicator,
   Loader,
@@ -20,8 +20,8 @@ import {
   Skeleton,
   Stack,
   Text,
-  Transition,
   Tooltip,
+  Transition,
   useMantineColorScheme
 } from '@mantine/core';
 import {
@@ -38,16 +38,17 @@ import {
   IconTimeDuration15,
 } from '@tabler/icons-react';
 
-import { Header } from '../../components/Header/Header.tsx';
-import { LeftButtonsNavbar } from '../../components/LeftButtonsNavbar/LeftButtonsNavbar.tsx';
-import { RightNavbar } from '../../components/RightNavbar/RightNavbar.tsx';
-import Auth from '../../components/auth';
+import { HeaderOperative } from '../../../components/Header/HeaderOperative.tsx';
+import { LeftButtonsNavbar } from '../../../components/LeftButtonsNavbar/LeftButtonsNavbar.tsx';
+import { RightNavbar } from '../../../components/RightNavbar/RightNavbar.tsx';
+import Auth from '../../../components/auth';
 
 import '@mantine/core/styles.css';
 import '@mantine/dates/styles.css';
 import classes from './dashboard.module.css';
 
-export default function Dashboard({
+export default function Operative({
+  setDashboard,
   count,
   date,
   timer,
@@ -163,12 +164,14 @@ export default function Dashboard({
   const dates = {
     date: date,
     loginDate: storage.date,
+    sessionDate: new Date(),
     sessionLength: count
   }
   const state = leadStates.filter((item, i) => (lead.state === item.state) && item)[0]);
   const current_status = leadStates.filter((item, i) => (lead.state === item.state) && item)[0].current_status)
   const current_color = leadStates.filter((item, i) => (leadStatus === item.state) && item)[0].color)
   const current_label = leadStates.filter((item, i) => (leadStatus === item.state) && item)[0].label)
+
 
   return (
     <AppShell
@@ -190,7 +193,8 @@ export default function Dashboard({
       }}
     >
       <AppShell.Header>
-        <Header
+        <HeaderOperative
+          setDashboard={setDashboard}
           leadName={lead.name}
           leadNumber={lead.number}
           leadState={lead.state}
@@ -259,13 +263,17 @@ export default function Dashboard({
               >
                 <Text>Pausa sessione</Text>
               </Button>
-              <Tooltip label="Interrompi sessione" color="blue.9" position="top-end" withArrow>
+              <Tooltip label="Interrompi sessione" color="red.7" position="top-end" withArrow>
                 <Button
                   size="lg"
                   variant="light"
                   color="red"
                   pl={10}
                   rightSection={<IconPlayerStopFilled size={30} opacity={0.30} />}
+                  onClick={() => {
+                    setSessionStatus("play");
+                    setDashboard(true);
+                  }}
                 >
                 </Button>
               </Tooltip>
@@ -317,9 +325,8 @@ export default function Dashboard({
                         color="teal.5"
                         rightSection={<IconPlayerPlayFilled size={30} opacity={0.50} />}
                         onClick={() => {
-                          // setInactivityTimerActive(false);
-                          setSessionStatus((sessionStatus == "play") ? "pause" : "play")
-                          if(sessionStatus == "play") { stopCount() } else { updateCount() }
+                          setSessionStatus("play")
+                          updateCount()
                         }}
                       >
                         <Text>Riprendi sessione</Text>
@@ -330,7 +337,11 @@ export default function Dashboard({
                         variant={dark ? "light" : ""}
                         color="red.5"
                         pl={10}
-                        rightSection={<IconPlayerStopFilled size={20} opacity={0.30} />}
+                        rightSection={<IconPlayerStopFilled size={20} opacity={0.30}/>}
+                        onClick={() => {
+                          setSessionStatus("play");
+                          setDashboard(true);
+                        }}
                       >
                         <Text fz={13}>Interrompi sessione</Text>
                       </Button>

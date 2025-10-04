@@ -21,7 +21,7 @@ import {
 import {
   IconLogout,
   IconBrandWhatsapp,
-  IconSettings,
+  IconPhone,
   IconCalendar,
   IconChevronDown,
   IconMoon,
@@ -42,10 +42,17 @@ function secondsToHms(d) {
     var mDisplay = m > 0 ? m + (m == 1 ? " minuto" : " minuti") : "";
     var sDisplay = s > 0 ? s + (s == 1 ? " secondo" : " secondi") : "";
 
-    return ((hDisplay.length > 0) ? hDisplay + ((mDisplay.length > 0) ? ", " : "") : "") + ((mDisplay.length > 0) ? mDisplay + ((sDisplay.length > 0) ? ", " : "") : "") + ((sDisplay.length > 0) ? sDisplay : "");
+    return [
+      (hDisplay.length > 0) ? hDisplay : null,
+      (mDisplay.length > 0) ? mDisplay : null,
+      (sDisplay.length > 0) ? sDisplay : null
+    ].filter(n => n)
+    .join(", ")
+    .replace(/\,(?=[^,]*$)/, " e");
 }
 
-export function Header({
+export function HeaderOperative({
+  setDashboard,
   leadName,
   leadNumber,
   leadState,
@@ -91,26 +98,48 @@ export function Header({
           />
         </Box>
 
-        <Group className={classes.controls}>
+        <Group className={classes.controls} grow>
           <Stack gap={0}>
             <Text color="dimmed" fz={11} component="tt">Data: <b>{dayjs(dates.date).format('YYYY-MM-DD HH:mm:ss')}</b></Text>
             <Text color="dimmed" fz={11} component="tt">Login: {dayjs(dates.loginDate).format('YYYY-MM-DD HH:mm:ss')}</Text>
+            <Text
+              color="dimmed"
+              fz={11}
+              component="tt"
+              // className={(sessionStatus == "pause") ? classes.blinking : null}
+            >
+              Sessione dal login: <b>{secondsToHms(sessionLength)}</b>
+            </Text>
+            <Text color="dimmed" fz={11} component="tt">Scadenza attività: <b>{secondsToHms(inactivityTimer)}</b></Text>
           </Stack>
+
           <Stack gap={0}>
+            <Text
+              size="xl"
+              ta="center"
+              fw={900}
+              variant="gradient"
+              gradient={{ from: 'blue', to: 'cyan', deg: 90 }}
+            >
+              {leadName}
+            </Text>
             <Text ta="center" color="dimmed" fz={14}>{targetName}</Text>
+          </Stack>
+          <Stack gap={0} align="flex-end">
+            <Badge size="sm" variant="light" color={color}>{current_label}</Badge>
+            <Text ta="left" fw={100} fz={20} color="dimmed" component="tt">{leadNumber}</Text>
           </Stack>
 
           <Group wrap="nowrap" gap={0} justify="flex-end" className={classes.call_button}>
             <Button
-              // disabled={true}
-              color={dark ? "gray.7" : "gray.4"}
-              c={dark ? "gray.4" : "gray.8"}
-              leftSection={<IconSettings size={20} opacity={0.5} />}
+              disabled={sessionStatus == "pause"}
+              color="green.7"
+              rightSection={<IconPhone />}
               radius={10}
               pb={3}
               className={classes.button}
             >
-              <Text>Impostazioni</Text>
+              <Text>Chiama</Text>
             </Button>
             <Menu
               transitionProps={{ transition: 'pop' }}
@@ -120,8 +149,7 @@ export function Header({
               <Menu.Target>
                 <ActionIcon
                   variant="filled"
-                  color={dark ? "gray.7" : "gray.4"}
-                  c={dark ? "gray.4" : "gray.8"}
+                  color="teal.9"
                   size={36}
                   className={classes.menuControl}
                 >
@@ -150,6 +178,7 @@ export function Header({
                   leftSection={<IconLogout size={16} stroke={1.5} color={theme.colors.blue[5]} />}
                   onClick={() => {
                     setSessionStatus("play");
+                    // clearColorScheme();
                     setStorage({
                       name: 'auth',
                       value: false,
@@ -157,6 +186,7 @@ export function Header({
                       path: '/',
                     });
                     setLoggedIn(false);
+                    setDashboard(true);
                   }}
                   >
                   Logout

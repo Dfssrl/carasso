@@ -1,5 +1,5 @@
 import { useState, useRef, useContext } from 'react';
-import { useDisclosure } from '@mantine/hooks';
+import { randomId, useDisclosure } from '@mantine/hooks';
 import dayjs from 'dayjs';
 import {
   Calendar,
@@ -22,7 +22,9 @@ import {
 import {
   Button,
   Center,
+  Container,
   Group,
+  Pagination,
   ScrollArea,
   Stack,
   Text,
@@ -34,6 +36,22 @@ import { NavbarLinksGroup, NavbarLinksSaloneVincente } from '../NavbarLinksGroup
 // import { Logo } from './Logo';
 import classes from './LeftButtonsNavbar.module.css';
 
+function chunk<T>(array: T[], size: number): T[][] {
+  if (!array.length) {
+    return [];
+  }
+  const head = array.slice(0, size);
+  const tail = array.slice(size);
+  return [head, ...chunk(tail, size)];
+}
+const cabine = [
+  {key: "cabina-1", name: "Cabina 1", color: "lime"},
+  {key: "cabina-2", name: "Cabina 2", color: "green"},
+  {key: "cabina-3", name: "Cabina 3", color: "teal"},
+]
+
+
+
 export function LeftButtonsNavbar({leadStates, leadStatus, setLeadStatus, current_status, sessionStatus}) {
   const { colorScheme, setColorScheme, clearColorScheme } = useMantineColorScheme();
   const dark = (colorScheme === "dark");
@@ -42,6 +60,7 @@ export function LeftButtonsNavbar({leadStates, leadStatus, setLeadStatus, curren
   const d = new Date();
   const [value, onChange] = useState(d);
   const viewport = useRef<HTMLDivElement>(null);
+  const [activePage, setPage] = useState(1);
   const links = leadStates.map((item) => (
       <Button
         disabled={sessionStatus == "pause"}
@@ -70,19 +89,28 @@ export function LeftButtonsNavbar({leadStates, leadStatus, setLeadStatus, curren
   );
     // console.log("current_status", leadStatus, current_status);
 
+  const items = cabine.map((item, k) => (
+    <Text key={item.key}>
+      key: {item.key}, name: {item.name}
+    </Text>
+  ));
   return (
     <nav className={classes.navbar}>
       <Stack gap={0}>
-        <Center mt={10} mb={40}>
-          <Button.Group>
-            <Button disabled={sessionStatus == "pause"} variant="outline" color="lime" size="xs">Cabina 1</Button>
-            <Button disabled={sessionStatus == "pause"} variant="outline" color="green" size="xs">Cabina 2</Button>
-            <Button disabled={sessionStatus == "pause"} variant="outline" color="teal" size="xs">Cabina 3</Button>
-          </Button.Group>
-        </Center>
+        <Group justify="space-between" mb={20} px={10}>
+          <Text mt={10} color="dimmed">Cabina</Text>
+          <Pagination
+            mt={10}
+            withControls={false}
+            total={cabine.length}
+            value={activePage}
+            onChange={setPage}
+          />
+        </Group>
 
+        <Text color="dimmed" px={10} mb={10}>Calendario</Text>
         <MiniCalendar
-          pb={30}
+          mb={20}
           numberOfDays={5}
           minDate={dayjs(d).format('YYYY-MM-DD')}
           maxDate={sessionStatus == "pause" ? dayjs(d).subtract(7, 'year').format('YYYY-MM-DD') : null}
@@ -94,9 +122,10 @@ export function LeftButtonsNavbar({leadStates, leadStatus, setLeadStatus, curren
           value={value}
           onChange={onChange}
         />
+
         <ScrollArea.Autosize
           mih={100}
-          mah={575}
+          mah={600}
           type="auto"
           offsetScrollbars
           px={0}
@@ -104,10 +133,12 @@ export function LeftButtonsNavbar({leadStates, leadStatus, setLeadStatus, curren
           mx="auto"
           viewportRef={viewport}
         >
+          <Text color="dimmed" mb={10}>Fascia oraria</Text>
           <Stack gap={20}>
             <TimeGrid
               disabled={sessionStatus == "pause"}
               pr={10}
+              mb={10}
               data={
                 getTimeRange({
                   startTime: '09:00',
@@ -122,7 +153,7 @@ export function LeftButtonsNavbar({leadStates, leadStatus, setLeadStatus, curren
               simpleGridProps={{ cols: 4, spacing: 'xs' }}
             />
 
-            <Text color="dimmed" mt={20} mb={-10}>Esito ultima call</Text>
+            <Text color="dimmed" mt={0} mb={-10}>Esito ultima call</Text>
             <Button.Group
               orientation="vertical"
               className={classes.links}

@@ -5,17 +5,12 @@ import { Loader } from '@mantine/core';
 import { useLocalStorage } from '@mantine/hooks';
 import { useHotkeys } from '@mantine/hooks';
 import { useMantineColorScheme } from '@mantine/core';
-import { useIdleTimer } from 'react-idle-timer'
 
 import Login from './pages/login/login.tsx';
-import Dashboard from './pages/dashboard/dashboard.tsx';
-
-
-/**
- * Configurations
- */
-var SESSION_LENGHT = 600000;
-
+import Dashboard from './pages/operators/dashboard/dashboard.tsx';
+import Operative from './pages/operators/dashboard/operative.tsx';
+import session from './hooks/timings/session.tsx';
+import inactivity from './hooks/timings/inactivity.tsx';
 
 
 export default function Home() {
@@ -30,36 +25,11 @@ export default function Home() {
     httpOnly: true,
     path: '/',
   });
-  const [date, setDate] = useState(new Date());
-  const [count, setCount] = useState(0);
+
   const [sessionStatus, setSessionStatus] = useState("play"); // Session statuses: play, pause, stop
+  const [sessionMaxStatus, setSessionMaxStatus] = useState("play"); // Session statuses: play, pause, stop
   const [callingStatus, setCallingStatus] = useState(false);
-
-  const [idleState, setIdleState] = useState<string>('Active')
-  const [idleCount, setIdleCount] = useState<number>(0)
-  const [idleRemaining, setIdleRemaining] = useState<number>(0)
-
-  const onIdle = () => {
-    DisplayPauseState();
-    setIdleState('Idle');
-  }
-
-  const onActive = () => {
-    setIdleState('Active')
-    console.warn("OK!")
-  }
-
-  const onAction = () => {
-    setIdleCount(idleCount + 1)
-  }
-
-  const { getRemainingTime } = useIdleTimer({
-    onIdle,
-    onActive,
-    onAction,
-    timeout: SESSION_LENGHT,
-    throttle: 500
-  })
+  const [dashboard, setDashboard] = useState(true);
 
   useHotkeys([
     ['mod + J', () => toggleColorScheme()],
@@ -73,45 +43,30 @@ export default function Home() {
     }
   }, [storage]);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setIdleRemaining(Math.ceil(getRemainingTime() / 1000))
-    }, 500)
+  const inactivity_data = inactivity(sessionStatus, setSessionStatus);
+  const date = inactivity_data.date;
+  const timer = inactivity_data.timer;
+  const idleRemaining = inactivity_data.idleRemaining;
+  const remainingTime = inactivity_data.remainingTime;
+  const updateCount = inactivity_data.updateCount;
+  const stopCount = inactivity_data.stopCount;
 
-    return () => {
-      clearInterval(interval)
-    }
-  })
+  const session_data = session(sessionStatus, setSessionStatus, setDashboard);
+  // // const date = session_data.date;
+  // // const timer = session_data.timer;
+  const session_idleRemaining = session_data.idleRemaining;
+  const session_remainingTime = session_data.remainingTime;
+  const session_updateCount = session_data.updateCount;
+  const session_stopCount = session_data.stopCount;
 
-  var timer, inactivityTimer;
-
-  function DisplayPauseState() {
-    setSessionStatus((sessionStatus == "play") ? "pause" : "play")
-    if(sessionStatus == "play") { stopCount() } else { updateCount() }
-  }
-  function updateCount() {
-    timer = setInterval(() => {
-      // console.log('ticking', count)
-      setCount(prevCount => prevCount + 1)
-      setDate(new Date())
-    }, 1000)
-  }
-  function stopCount() {
-    // if (count === 3) {
-      console.log('stop!');
-      clearInterval(timer);
-      // return () => clearInterval(timer)
-    // }
-    console.log("date", date);
-  }
+  // console.log("inactivity_data.sessionStatus", inactivity_data.sessionStatus);
+  // console.log("session_data.sessionStatus", session_data.sessionStatus);
 
   useEffect(() => {
-  }, []);
+    setSessionStatus(inactivity_data.sessionStatus);
+    setSessionMaxStatus(session_data.idleRemaining);
+  }, [timer]);
 
-  useEffect(() => {
-    updateCount();
-    return () => clearInterval(timer)
-  }, [count]);
 
   // Loading state
   if (loggedIn === null) {
@@ -121,19 +76,42 @@ export default function Home() {
   if (!loggedIn) {
     return <Login loggedIn={loggedIn} setLoggedIn={setLoggedIn} />;
   } else {
-    return <Dashboard
-      count={count}
-      date={date}
-      timer={timer}
-      inactivityTimer={Math.ceil(getRemainingTime() / 1000)}
-      idleRemaining={idleRemaining}
-      updateCount={updateCount}
-      stopCount={stopCount}
-      // sessionLength={idleCount}
-      sessionStatus={sessionStatus}
-      setSessionStatus={setSessionStatus}
-      callingStatus={sessionStatus}
-      setCallingStatus={sessionStatus}
+    if(dashboard) {
+      return <Dashboard
+        setDashboard={setDashboard}
+        // count={count}
+        date={date}
+        timer={timer}
+        inactivityTimer={remainingTime}
+        idleRemaining={idleRemaining}
+        updateCount={updateCount}
+        stopCount={stopCount}
+        // // sessionLength={idleCount}
+        sessionStatus={sessionStatus}
+        setSessionStatus={setSessionStatus}
+        sessionMaxStatus={sessionMaxStatus}
+        setSessionMaxStatus={setSessionMaxStatus}
+        callingStatus={callingStatus}
+        setCallingStatus={setCallingStatus}
       />;
+    } else {
+      return <Operative
+        setDashboard={setDashboard}
+        // count={count}
+        date={date}
+        timer={timer}
+        inactivityTimer={remainingTime}
+        idleRemaining={idleRemaining}
+        updateCount={updateCount}
+        stopCount={stopCount}
+        // // sessionLength={idleCount}
+        sessionStatus={sessionStatus}
+        setSessionStatus={setSessionStatus}
+        sessionMaxStatus={sessionMaxStatus}
+        setSessionMaxStatus={setSessionMaxStatus}
+        callingStatus={callingStatus}
+        setCallingStatus={setCallingStatus}
+      />;
+    }
   }
 }
