@@ -73,7 +73,7 @@ export default function inactivity(sessionStatus, setSessionStatus) {
     onAction: () => {
       setIdleCount(idleCount + 1)
     },
-    timeout: FAST_SESSION,
+    timeout: INACTIVITY,
     throttle: 500,
     syncTimers: 200,
     crossTab: true

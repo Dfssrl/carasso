@@ -47,16 +47,16 @@ import {
   IconListDetails,
 } from '@tabler/icons-react';
 
-import { Header } from '../../../components/Header/Header.tsx';
+import { Header } from '../../../components/Header/Header_dashboard.tsx';
 import { LeftButtonsNavbar } from '../../../components/LeftButtonsNavbar/LeftButtonsNavbar.tsx';
 import { RightNavbar } from '../../../components/RightNavbar/RightNavbar.tsx';
 import Auth from '../../../components/auth';
 
 import '@mantine/core/styles.css';
 import '@mantine/dates/styles.css';
-import classes from './operative.module.css';
+import classes from './consultant_dashboard.module.css';
 
-export default function Dashboard({
+export default function ConsultantDashboard({
   setDashboard,
   date,
   count,

@@ -45,9 +45,9 @@ import Auth from '../../../components/auth';
 
 import '@mantine/core/styles.css';
 import '@mantine/dates/styles.css';
-import classes from './dashboard.module.css';
+import classes from './operator_manager_main.module.css';
 
-export default function Operative({
+export default function OperatorManagerMain({
   setDashboard,
   count,
   date,

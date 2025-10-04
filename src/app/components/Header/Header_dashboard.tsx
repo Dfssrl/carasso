@@ -21,7 +21,7 @@ import {
 import {
   IconLogout,
   IconBrandWhatsapp,
-  IconSettings,
+  IconListDetails,
   IconCalendar,
   IconChevronDown,
   IconMoon,
@@ -29,7 +29,7 @@ import {
   IconTrash,
 } from '@tabler/icons-react';
 import { Logo1, Logo2, Logo3, Logo4, Logo5, Logo6 } from './Logo.tsx';
-import classes from './HeaderOperative.module.css';
+import classes from './Header_dashboard.module.css';
 
 
 function secondsToHms(d) {
@@ -105,12 +105,11 @@ export function Header({
               // disabled={true}
               color={dark ? "gray.7" : "gray.4"}
               c={dark ? "gray.4" : "gray.8"}
-              leftSection={<IconSettings size={20} opacity={0.5} />}
+              leftSection={<IconListDetails size={20} opacity={0.5} />}
               radius={10}
-              pb={3}
               className={classes.button}
             >
-              <Text>Impostazioni</Text>
+              <Text>Statistiche</Text>
             </Button>
             <Menu
               transitionProps={{ transition: 'pop' }}

@@ -19,6 +19,7 @@ import {
   useMantineTheme,
 } from '@mantine/core';
 import {
+  IconListDetails,
   IconLogout,
   IconBrandWhatsapp,
   IconPhone,
@@ -170,6 +171,22 @@ export function HeaderOperative({
                   onClick={() => setColorScheme(!dark ? 'dark' : 'light')}
                   >
                   {(dark) ? "Tema chiaro" : "Tema scuro"}
+                </Menu.Item>
+
+                <Menu.Divider />
+
+                <Menu.Item
+                  leftSection={
+                    dark ? (
+                      <IconListDetails style={{ width: 18, height: 18 }} />
+                    ) : (
+                      <IconListDetails style={{ width: 18, height: 18 }} />
+                    )
+                  }
+                  color={dark ? "gray.7" : "gray.4"}
+                  title="Toggle color scheme"
+                  >
+                  Statistiche
                 </Menu.Item>
 
                 <Menu.Divider />

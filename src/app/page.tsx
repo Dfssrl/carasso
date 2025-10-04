@@ -7,10 +7,24 @@ import { useHotkeys } from '@mantine/hooks';
 import { useMantineColorScheme } from '@mantine/core';
 
 import Login from './pages/login/login.tsx';
-import Dashboard from './pages/operators/dashboard/dashboard.tsx';
-import Operative from './pages/operators/dashboard/operative.tsx';
 import session from './hooks/timings/session.tsx';
 import inactivity from './hooks/timings/inactivity.tsx';
+
+import OperatorDashboard from './pages/dashboards/operator/operator_dashboard.tsx';
+import OperatorMain from './pages/dashboards/operator/operator_main.tsx';
+import OperatorManagerDashboard from './pages/dashboards/operator_manager/operator_manager_dashboard.tsx';
+import OperatorManagerMain from './pages/dashboards/operator_manager/operator_manager_main.tsx';
+import ConsultantDashboard from './pages/dashboards/consultant/consultant_dashboard.tsx';
+import ConsultantMain from './pages/dashboards/consultant/consultant_main.tsx';
+import ConsultantManagerDashboard from './pages/dashboards/consultant_manager/consultant_manager_dashboard.tsx';
+import ConsultantManagerMain from './pages/dashboards/consultant_manager/consultant_manager_main.tsx';
+import SellerDashboard from './pages/dashboards/seller/seller_dashboard.tsx';
+import SellerMain from './pages/dashboards/seller/seller_main.tsx';
+import SellerManagerDashboard from './pages/dashboards/seller_manager/seller_manager_dashboard.tsx';
+import SellerManagerMain from './pages/dashboards/seller_manager/seller_manager_main.tsx';
+import AdminDashboard from './pages/dashboards/admin/admin_dashboard.tsx';
+import AdminMain from './pages/dashboards/admin/admin_main.tsx';
+
 
 
 export default function Home() {
@@ -76,42 +90,272 @@ export default function Home() {
   if (!loggedIn) {
     return <Login loggedIn={loggedIn} setLoggedIn={setLoggedIn} />;
   } else {
-    if(dashboard) {
-      return <Dashboard
-        setDashboard={setDashboard}
-        // count={count}
-        date={date}
-        timer={timer}
-        inactivityTimer={remainingTime}
-        idleRemaining={idleRemaining}
-        updateCount={updateCount}
-        stopCount={stopCount}
-        // // sessionLength={idleCount}
-        sessionStatus={sessionStatus}
-        setSessionStatus={setSessionStatus}
-        sessionMaxStatus={sessionMaxStatus}
-        setSessionMaxStatus={setSessionMaxStatus}
-        callingStatus={callingStatus}
-        setCallingStatus={setCallingStatus}
-      />;
-    } else {
-      return <Operative
-        setDashboard={setDashboard}
-        // count={count}
-        date={date}
-        timer={timer}
-        inactivityTimer={remainingTime}
-        idleRemaining={idleRemaining}
-        updateCount={updateCount}
-        stopCount={stopCount}
-        // // sessionLength={idleCount}
-        sessionStatus={sessionStatus}
-        setSessionStatus={setSessionStatus}
-        sessionMaxStatus={sessionMaxStatus}
-        setSessionMaxStatus={setSessionMaxStatus}
-        callingStatus={callingStatus}
-        setCallingStatus={setCallingStatus}
-      />;
+    if(storage.type == "operator") {
+      if(dashboard) {
+        return <OperatorDashboard
+          setDashboard={setDashboard}
+          // count={count}
+          date={date}
+          timer={timer}
+          inactivityTimer={remainingTime}
+          idleRemaining={idleRemaining}
+          updateCount={updateCount}
+          stopCount={stopCount}
+          // // sessionLength={idleCount}
+          sessionStatus={sessionStatus}
+          setSessionStatus={setSessionStatus}
+          sessionMaxStatus={sessionMaxStatus}
+          setSessionMaxStatus={setSessionMaxStatus}
+          callingStatus={callingStatus}
+          setCallingStatus={setCallingStatus}
+        />;
+      } else {
+        return <OperatorMain
+          setDashboard={setDashboard}
+          // count={count}
+          date={date}
+          timer={timer}
+          inactivityTimer={remainingTime}
+          idleRemaining={idleRemaining}
+          updateCount={updateCount}
+          stopCount={stopCount}
+          // // sessionLength={idleCount}
+          sessionStatus={sessionStatus}
+          setSessionStatus={setSessionStatus}
+          sessionMaxStatus={sessionMaxStatus}
+          setSessionMaxStatus={setSessionMaxStatus}
+          callingStatus={callingStatus}
+          setCallingStatus={setCallingStatus}
+        />;
+      }
+    } else if(storage.type == "operator_manager") {
+      if(dashboard) {
+        return <OperatorManagerDashboard
+          setDashboard={setDashboard}
+          // count={count}
+          date={date}
+          timer={timer}
+          inactivityTimer={remainingTime}
+          idleRemaining={idleRemaining}
+          updateCount={updateCount}
+          stopCount={stopCount}
+          // // sessionLength={idleCount}
+          sessionStatus={sessionStatus}
+          setSessionStatus={setSessionStatus}
+          sessionMaxStatus={sessionMaxStatus}
+          setSessionMaxStatus={setSessionMaxStatus}
+          callingStatus={callingStatus}
+          setCallingStatus={setCallingStatus}
+        />;
+      } else {
+        return <OperatorManagerMain
+          setDashboard={setDashboard}
+          // count={count}
+          date={date}
+          timer={timer}
+          inactivityTimer={remainingTime}
+          idleRemaining={idleRemaining}
+          updateCount={updateCount}
+          stopCount={stopCount}
+          // // sessionLength={idleCount}
+          sessionStatus={sessionStatus}
+          setSessionStatus={setSessionStatus}
+          sessionMaxStatus={sessionMaxStatus}
+          setSessionMaxStatus={setSessionMaxStatus}
+          callingStatus={callingStatus}
+          setCallingStatus={setCallingStatus}
+        />;
+      }
+    } else if(storage.type == "consultant") {
+      if(dashboard) {
+        return <ConsultantDashboard
+          setDashboard={setDashboard}
+          // count={count}
+          date={date}
+          timer={timer}
+          inactivityTimer={remainingTime}
+          idleRemaining={idleRemaining}
+          updateCount={updateCount}
+          stopCount={stopCount}
+          // // sessionLength={idleCount}
+          sessionStatus={sessionStatus}
+          setSessionStatus={setSessionStatus}
+          sessionMaxStatus={sessionMaxStatus}
+          setSessionMaxStatus={setSessionMaxStatus}
+          callingStatus={callingStatus}
+          setCallingStatus={setCallingStatus}
+        />;
+      } else {
+        return <ConsultantMain
+          setDashboard={setDashboard}
+          // count={count}
+          date={date}
+          timer={timer}
+          inactivityTimer={remainingTime}
+          idleRemaining={idleRemaining}
+          updateCount={updateCount}
+          stopCount={stopCount}
+          // // sessionLength={idleCount}
+          sessionStatus={sessionStatus}
+          setSessionStatus={setSessionStatus}
+          sessionMaxStatus={sessionMaxStatus}
+          setSessionMaxStatus={setSessionMaxStatus}
+          callingStatus={callingStatus}
+          setCallingStatus={setCallingStatus}
+        />;
+      }
+    } else if(storage.type == "consultant_manager") {
+      if(dashboard) {
+        return <ConsultantManagerDashboard
+          setDashboard={setDashboard}
+          // count={count}
+          date={date}
+          timer={timer}
+          inactivityTimer={remainingTime}
+          idleRemaining={idleRemaining}
+          updateCount={updateCount}
+          stopCount={stopCount}
+          // // sessionLength={idleCount}
+          sessionStatus={sessionStatus}
+          setSessionStatus={setSessionStatus}
+          sessionMaxStatus={sessionMaxStatus}
+          setSessionMaxStatus={setSessionMaxStatus}
+          callingStatus={callingStatus}
+          setCallingStatus={setCallingStatus}
+        />;
+      } else {
+        return <ConsultantManagerMain
+          setDashboard={setDashboard}
+          // count={count}
+          date={date}
+          timer={timer}
+          inactivityTimer={remainingTime}
+          idleRemaining={idleRemaining}
+          updateCount={updateCount}
+          stopCount={stopCount}
+          // // sessionLength={idleCount}
+          sessionStatus={sessionStatus}
+          setSessionStatus={setSessionStatus}
+          sessionMaxStatus={sessionMaxStatus}
+          setSessionMaxStatus={setSessionMaxStatus}
+          callingStatus={callingStatus}
+          setCallingStatus={setCallingStatus}
+        />;
+      }
+    } else if(storage.type == "seller") {
+      if(dashboard) {
+        return <SellerDashboard
+          setDashboard={setDashboard}
+          // count={count}
+          date={date}
+          timer={timer}
+          inactivityTimer={remainingTime}
+          idleRemaining={idleRemaining}
+          updateCount={updateCount}
+          stopCount={stopCount}
+          // // sessionLength={idleCount}
+          sessionStatus={sessionStatus}
+          setSessionStatus={setSessionStatus}
+          sessionMaxStatus={sessionMaxStatus}
+          setSessionMaxStatus={setSessionMaxStatus}
+          callingStatus={callingStatus}
+          setCallingStatus={setCallingStatus}
+        />;
+      } else {
+        return <SellerMain
+          setDashboard={setDashboard}
+          // count={count}
+          date={date}
+          timer={timer}
+          inactivityTimer={remainingTime}
+          idleRemaining={idleRemaining}
+          updateCount={updateCount}
+          stopCount={stopCount}
+          // // sessionLength={idleCount}
+          sessionStatus={sessionStatus}
+          setSessionStatus={setSessionStatus}
+          sessionMaxStatus={sessionMaxStatus}
+          setSessionMaxStatus={setSessionMaxStatus}
+          callingStatus={callingStatus}
+          setCallingStatus={setCallingStatus}
+        />;
+      }
+    } else if(storage.type == "seller_manager") {
+      if(dashboard) {
+        return <SellerManagerDashboard
+          setDashboard={setDashboard}
+          // count={count}
+          date={date}
+          timer={timer}
+          inactivityTimer={remainingTime}
+          idleRemaining={idleRemaining}
+          updateCount={updateCount}
+          stopCount={stopCount}
+          // // sessionLength={idleCount}
+          sessionStatus={sessionStatus}
+          setSessionStatus={setSessionStatus}
+          sessionMaxStatus={sessionMaxStatus}
+          setSessionMaxStatus={setSessionMaxStatus}
+          callingStatus={callingStatus}
+          setCallingStatus={setCallingStatus}
+        />;
+      } else {
+        return <SellerManagerMain
+          setDashboard={setDashboard}
+          // count={count}
+          date={date}
+          timer={timer}
+          inactivityTimer={remainingTime}
+          idleRemaining={idleRemaining}
+          updateCount={updateCount}
+          stopCount={stopCount}
+          // // sessionLength={idleCount}
+          sessionStatus={sessionStatus}
+          setSessionStatus={setSessionStatus}
+          sessionMaxStatus={sessionMaxStatus}
+          setSessionMaxStatus={setSessionMaxStatus}
+          callingStatus={callingStatus}
+          setCallingStatus={setCallingStatus}
+        />;
+      }
+    } else if(storage.type == "admin") {
+      if(dashboard) {
+        return <AdminDashboard
+          setDashboard={setDashboard}
+          // count={count}
+          date={date}
+          timer={timer}
+          inactivityTimer={remainingTime}
+          idleRemaining={idleRemaining}
+          updateCount={updateCount}
+          stopCount={stopCount}
+          // // sessionLength={idleCount}
+          sessionStatus={sessionStatus}
+          setSessionStatus={setSessionStatus}
+          sessionMaxStatus={sessionMaxStatus}
+          setSessionMaxStatus={setSessionMaxStatus}
+          callingStatus={callingStatus}
+          setCallingStatus={setCallingStatus}
+        />;
+      } else {
+        return <AdminMain
+          setDashboard={setDashboard}
+          // count={count}
+          date={date}
+          timer={timer}
+          inactivityTimer={remainingTime}
+          idleRemaining={idleRemaining}
+          updateCount={updateCount}
+          stopCount={stopCount}
+          // // sessionLength={idleCount}
+          sessionStatus={sessionStatus}
+          setSessionStatus={setSessionStatus}
+          sessionMaxStatus={sessionMaxStatus}
+          setSessionMaxStatus={setSessionMaxStatus}
+          callingStatus={callingStatus}
+          setCallingStatus={setCallingStatus}
+        />;
+      }
     }
   }
 }

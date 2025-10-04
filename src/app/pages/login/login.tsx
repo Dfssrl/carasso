@@ -75,10 +75,71 @@ export default function Login({loggedIn, setLoggedIn}) {
         <Divider label="Area riservata" labelPosition="center" my="sm" />
 
         <form onSubmit={form.onSubmit((data) => {
-          if(data.email == "admin@salone.vincente" && data.password == "admin_tour") {
+          if(data.email == "operator@salone.vincente" && data.password == "admin_tour") {
             setStorage({
               name: 'auth',
               value: true,
+              type: "operator",
+              httpOnly: true,
+              date: new Date(),
+              path: '/',
+            });
+            setLoggedIn(true);
+          } else if(data.email == "operator_manager@salone.vincente" && data.password == "admin_tour") {
+            setStorage({
+              name: 'auth',
+              value: true,
+              type: "operator_manager",
+              httpOnly: true,
+              date: new Date(),
+              path: '/',
+            });
+            setLoggedIn(true);
+          } else if(data.email == "consultant@salone.vincente" && data.password == "admin_tour") {
+            setStorage({
+              name: 'auth',
+              value: true,
+              type: "consultant",
+              httpOnly: true,
+              date: new Date(),
+              path: '/',
+            });
+            setLoggedIn(true);
+          } else if(data.email == "consultant_manager@salone.vincente" && data.password == "admin_tour") {
+            setStorage({
+              name: 'auth',
+              value: true,
+              type: "consultant_manager",
+              httpOnly: true,
+              date: new Date(),
+              path: '/',
+            });
+            setLoggedIn(true);
+          } else if(data.email == "seller@salone.vincente" && data.password == "admin_tour") {
+            setStorage({
+              name: 'auth',
+              value: true,
+              type: "seller",
+              httpOnly: true,
+              date: new Date(),
+              path: '/',
+            });
+            setLoggedIn(true);
+          } else if(data.email == "seller_manager@salone.vincente" && data.password == "admin_tour") {
+            setStorage({
+              name: 'auth',
+              value: true,
+              type: "seller_manager",
+              httpOnly: true,
+              date: new Date(),
+              path: '/',
+            });
+            setLoggedIn(true);
+          } else if(data.email == "admin@salone.vincente" && data.password == "admin_tour") {
+            setStorage({
+              name: 'auth',
+              value: true,
+              type: "admin",
               httpOnly: true,
               date: new Date(),
               path: '/',
